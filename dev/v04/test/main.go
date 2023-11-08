@@ -18,7 +18,7 @@ func main() {
 		c.Next()
 		et := time.Now()
 		log.Println("end time", et.UnixNano())
-		log.Println("use time", et.UnixMicro() - st.UnixMicro(), "microsecond")
+		log.Println("use time", et.UnixMicro()-st.UnixMicro(), "microsecond")
 	})
 
 	r.Use(func(c *rough.Context) {

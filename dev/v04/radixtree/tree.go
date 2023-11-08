@@ -13,10 +13,10 @@ const (
 
 type node struct {
 	path      string
-	indices   string          // 子节点首字母集合，通过冗余数据来快速判断path与当前节点的子节点是否有公共前缀
-	wildChild bool            // 是否为通配符节点
+	indices   string // 子节点首字母集合，通过冗余数据来快速判断path与当前节点的子节点是否有公共前缀
+	wildChild bool   // 是否为通配符节点
 	nType     nodeType
-	priority  uint32          // 用于给父节点的children排序
+	priority  uint32 // 用于给父节点的children排序
 	children  []*node
 	handlers  HandlersChain
 	fullPath  string
@@ -212,7 +212,7 @@ walk:
 		}
 
 		// Otherwise add handle to current node
-		// 
+		//
 		if n.handlers != nil {
 			panic("handlers are already registered for path '" + fullPath + "'")
 		}

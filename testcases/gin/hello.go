@@ -15,7 +15,7 @@ func main() {
 		c.String(200, "pong")
 	})
 
-	r.GET("/echo/:str", func(c *gin.Context){
+	r.GET("/echo/:str", func(c *gin.Context) {
 		c.String(200, c.Param("str"))
 	})
 

@@ -249,10 +249,10 @@ func (en *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		R:     r,
 		index: -1,
 	}
-	c.handlers = en.getRoute(c.R.Method, c.R.URL.String())
-	log.Println(c.R.Method, c.R.URL.String(), len(c.handlers), "handlers")
+	c.handlers = en.getRoute(c.R.Method, c.R.URL.Path)
+	log.Println(c.R.Method, c.R.URL.Path, len(c.handlers), "handlers")
 	if c.handlers == nil {
-		log.Println("request", c.R.Method, c.R.URL.String(), "not found")
+		log.Println("request", c.R.Method, c.R.URL.Path, "not found")
 		c.String(http.StatusNotFound, "Not Found")
 		return
 	}
