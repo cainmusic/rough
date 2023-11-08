@@ -7,6 +7,8 @@ rough version gin http server
 
 项目详情请看`doc.md`
 
+简单更新内容看`changelog.md`
+
 # 使用rough
 
 `./testcases/userough.go`

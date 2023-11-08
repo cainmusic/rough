@@ -897,3 +897,43 @@ you can use any method to request this url
 $ curl -X DELETE "http://localhost:8888/any1"
 Not Found
 ```
+
+# 【五】添油加醋
+
+目前`rough`尚不能满足日常使用，需要不断的增加内容。
+
+## 【五。一】Query和PostForm
+
+`gin`获取`query`是通过`net/http`包的`Request`的`URL`获取的，`URL`来自于`net/url`包，有`Query`方法。
+
+`gin`获取`postform`是通过`net/http`包的`Request`的`ParseMultipartForm`方法获得，`ParseMultipartForm`调用`ParseForm`，`ParseMultipartForm`支持上传文件，但`rough`暂时不支持。
+
+代码：
+
+```
+./dev/v05
+├── rough.go
+└── test
+    └── main.go
+
+1 directory, 2 files
+```
+
+启动服务，在命令行使用curl命令用不同的method进行请求：
+
+```
+$ curl http://localhost:8888/query?a=1
+you just visited /query?a=1
+
+$ curl -X POST -d 'b=111' "http://localhost:8888/postform"
+you just visited /postform
+```
+
+日志打印：
+
+```
+2023/11/08 19:46:33 GET /query 2 handlers
+2023/11/08 19:46:33 1
+2023/11/08 19:47:16 POST /postform 2 handlers
+2023/11/08 19:47:16 111
+```
