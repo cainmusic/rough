@@ -937,3 +937,52 @@ you just visited /postform
 2023/11/08 19:47:16 POST /postform 2 handlers
 2023/11/08 19:47:16 111
 ```
+
+## 【五。二】JSON、HTML和Redirect
+
+目前`rough`仅有`String`的响应方式，我们这里增加两个响应格式，以及一个重定向的功能。
+
+`gin`的响应方法可以多次调用，可写的`content`会一直往响应信息里写，但`http`的状态码不能覆盖，会报警。
+
+但`rough`为了避免使用上的歧义，会限制响应方法仅一次调用有效。
+
+代码：
+
+```
+./dev/v06
+├── render
+│   ├── html.go
+│   ├── json.go
+│   ├── redirect.go
+│   ├── render.go
+│   └── text.go
+├── rough.go
+├── template
+│   ├── files
+│   │   ├── 1.html
+│   │   └── 2.html
+│   └── index.html
+└── test
+    └── main.go
+
+4 directories, 10 files
+```
+
+启动服务，请求各个接口，可以看到：
+
+```
+http://localhost:8888/visit_index
+这是index.html，一个html模板 你好
+
+http://localhost:8888/some_json
+{"age":18,"name":"小王"}
+
+http://localhost:8888/some_json_2
+{"name":"小张","age":17}
+
+http://localhost:8888/redirect
+在浏览器访问会直接跳转http://localhost:8888/visit_index
+
+$ curl http://localhost:8888/redirect
+<a href="/visit_index">Temporary Redirect</a>.
+```
