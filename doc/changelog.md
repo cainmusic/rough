@@ -7,3 +7,7 @@
 20231108
 
 * 增加了对`Query`和`PostForm`的解析
+
+20231121
+
+* 增加了`JSON`、`HTML`、`Redirect`三种响应方法
