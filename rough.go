@@ -10,7 +10,7 @@ import (
 	"path"
 	"regexp"
 
-	"github.com/cainmusic/rough/dev/v06/render"
+	"github.com/cainmusic/rough/render"
 )
 
 /*
