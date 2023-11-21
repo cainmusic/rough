@@ -986,3 +986,38 @@ http://localhost:8888/redirect
 $ curl http://localhost:8888/redirect
 <a href="/visit_index">Temporary Redirect</a>.
 ```
+
+## 【五。三】拆分`rough.go`
+
+目前来看`rough.go`并不算大，但考虑到使代码更容易阅读，拆出三个文件：
+
+```
+context.go 上下文
+router.go 路由
+utils.go 工具
+```
+
+代码：
+
+```
+./dev/v07
+├── context.go
+├── render
+│   ├── html.go
+│   ├── json.go
+│   ├── redirect.go
+│   ├── render.go
+│   └── text.go
+├── rough.go
+├── router.go
+├── template
+│   ├── files
+│   │   ├── 1.html
+│   │   └── 2.html
+│   └── index.html
+├── test
+│   └── main.go
+└── utils.go
+
+4 directories, 13 files
+```
