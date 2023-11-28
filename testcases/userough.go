@@ -10,6 +10,8 @@ import (
 func main() {
 	r := rough.New()
 
+	r.Static("/gin_cases", "./gin")
+
 	r.GET("/", func(c *rough.Context) {
 		c.String(http.StatusOK, "hello, rough serves you.")
 	})

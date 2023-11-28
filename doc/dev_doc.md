@@ -1021,3 +1021,36 @@ utils.go 工具
 
 4 directories, 13 files
 ```
+
+## 【五。四】静态文件
+
+`gin`的静态文件使用路由通配符实现的，但`rough`还没实现通配符，所以不应用路由的方法实现静态文件。
+
+（注意是不应不是无法，非要用路由方法，我们可以给每个文件加一个路由，但这样非常不好）
+
+目前我们可以考虑用中间件匹配`url`来实现。
+
+代码：
+
+```
+./dev/v08
+├── context.go
+├── render
+│   ├── html.go
+│   ├── json.go
+│   ├── redirect.go
+│   ├── render.go
+│   └── text.go
+├── rough.go
+├── router.go
+├── template
+│   ├── files
+│   │   ├── 1.html
+│   │   └── 2.html
+│   └── index.html
+├── test
+│   └── main.go
+└── utils.go
+
+4 directories, 13 files
+```
