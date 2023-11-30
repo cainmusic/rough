@@ -1054,3 +1054,74 @@ utils.go 工具
 
 4 directories, 13 files
 ```
+
+# 【六】路由表重构并支持通配符
+
+前面的代码是`rough`项目的`1.0`版本，那么从路由表重构开始就可以算作`2.0`版本的开始了。
+
+`gin`项目构建路由表使用了`radix tree`这个结构，`rough`也会努力实现这一数据结构，同时也会对通配符进行支持。
+
+但我们对这个结构的实现会分几步走。
+
+## 【六】基础radix tree实现
+
+代码：
+
+```
+./dev/v09/treedev/v1/
+├── tree.go
+└── tree_test.go
+
+0 directories, 2 files
+```
+
+基础的`radix tree`实现，在目录下运行测试会得到：
+
+```
+=== RUN   TestTree
+prio,floor,path  ,full           ,tokens
+1   ,0    ,/hello,/hello         ,[1]
+
+prio,floor,path  ,full           ,tokens
+2   ,0    ,/     ,/              ,[]
+1   ,1    ,hello ,/hello         ,[1]
+1   ,1    ,see   ,/see           ,[2]
+
+prio,floor,path  ,full           ,tokens
+3   ,0    ,/     ,/              ,[]
+2   ,1    ,se    ,/se            ,[]
+1   ,2    ,e     ,/see           ,[2]
+1   ,2    ,arch  ,/search        ,[3]
+1   ,1    ,hello ,/hello         ,[1]
+
+prio,floor,path  ,full           ,tokens
+4   ,0    ,/     ,/              ,[]
+3   ,1    ,se    ,/se            ,[4]
+1   ,2    ,e     ,/see           ,[2]
+1   ,2    ,arch  ,/search        ,[3]
+1   ,1    ,hello ,/hello         ,[1]
+
+prio,floor,path  ,full           ,tokens
+5   ,0    ,/     ,/              ,[]
+4   ,1    ,se    ,/se            ,[4]
+2   ,2    ,e     ,/see           ,[2]
+1   ,3    ,/me   ,/see/me        ,[5]
+1   ,2    ,arch  ,/search        ,[3]
+1   ,1    ,hello ,/hello         ,[1]
+
+prio,floor,path  ,full           ,tokens
+6   ,0    ,/     ,/              ,[]
+4   ,1    ,se    ,/se            ,[4]
+2   ,2    ,e     ,/see           ,[2]
+1   ,3    ,/me   ,/see/me        ,[5]
+1   ,2    ,arch  ,/search        ,[3]
+2   ,1    ,hello ,/hello         ,[1]
+1   ,2    ,/world,/hello/world   ,[6]
+
+    tree_test.go:27: {/see [2]}
+--- PASS: TestTree (0.00s)
+PASS
+ok  	github.com/cainmusic/rough/dev/v09/treedev/v1	0.548s
+```
+
+基本实现了我们的期望。
