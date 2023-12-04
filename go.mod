@@ -2,7 +2,10 @@ module github.com/cainmusic/rough
 
 go 1.20
 
-require github.com/gin-gonic/gin v1.9.1
+require (
+	github.com/cainmusic/gtable v0.0.0-20231201103719-45fe0e6fcfc1
+	github.com/gin-gonic/gin v1.9.1
+)
 
 require (
 	github.com/bytedance/sonic v1.9.1 // indirect

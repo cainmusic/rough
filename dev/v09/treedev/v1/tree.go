@@ -2,6 +2,8 @@ package tree
 
 import (
 	"fmt"
+
+	"github.com/cainmusic/gtable"
 )
 
 func min(a, b int) int {
@@ -254,21 +256,18 @@ func (n *node) debugRead(l *[]debugNode, f int) {
 }
 
 func debugTreePrint(l *[]debugNode) {
-	fmt.Println("prio,floor,path  ,full           ,tokens")
-	for _, d := range *l {
-		fmt.Printf(
-			"%d   ,%d    ,%s,%s,%v\n",
-			d.node.priority,
-			d.floor,
-			endSpaces(d.node.path, 6),
-			endSpaces(d.node.fullPath, 15),
-			d.node.tokens)
-	}
-}
+	table := gtable.NewTable()
 
-func endSpaces(s string, n int) string {
-	for len(s) < n {
-		s = s + " "
+	table.AppendHead([]string{"prio", "floor", "path", "full", "tokens"})
+	for _, d := range *l {
+		table.AppendBody([]string{
+			fmt.Sprint(d.node.priority),
+			fmt.Sprint(d.floor),
+			d.node.path,
+			d.node.fullPath,
+			fmt.Sprint(d.node.tokens),
+		})
 	}
-	return s
+
+	table.Print()
 }
