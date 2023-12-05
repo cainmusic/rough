@@ -269,5 +269,5 @@ func debugTreePrint(l *[]debugNode) {
 		})
 	}
 
-	table.Print()
+	table.PrintData()
 }
