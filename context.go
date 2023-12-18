@@ -19,13 +19,22 @@ type Context struct {
 	R    *http.Request
 	Keys map[string]any
 
+	Params       Params
+	params       *Params
+	skippedNodes *[]skippedNode
+
 	index    int8
 	handlers []HandleFunc
+	fullPath string
 
 	queryCache url.Values
 	formCache  url.Values
 
 	statusCode int
+}
+
+func (c *Context) Param(key string) string {
+	return c.Params.ByName(key)
 }
 
 func (c *Context) Query(key string) string {

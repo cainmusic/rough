@@ -1063,7 +1063,7 @@ utils.go 工具
 
 但我们对这个结构的实现会分几步走。
 
-## 【六】基础radix tree实现
+## 【六。一】基础radix tree实现
 
 代码：
 
@@ -1125,3 +1125,163 @@ ok  	github.com/cainmusic/rough/dev/v09/treedev/v1	0.548s
 ```
 
 基本实现了我们的期望。
+
+## 【六。二】radixtree带通配符
+
+代码：
+
+```
+./dev/v09/treedev/v2/
+├── routetree.md
+├── tree.go
+├── tree_my_test.go
+└── tree_test.go
+
+0 directories, 4 files
+```
+
+在目录下运行测试会得到：
+
+```
+=== RUN   TestOne
+/hello/:ppaa
++----+-----+-------+------------+--------+-----+---------+-------+
+|prio|floor|path   |fullPath    |handlers|nType|wildChild|indices|
++----+-----+-------+------------+--------+-----+---------+-------+
+|1   |0    |/hello/|            |<nil>   |1    |true     |       |
+|1   |1    |:ppaa  |/hello/:ppaa|1       |2    |false    |       |
++----+-----+-------+------------+--------+-----+---------+-------+
+/hello/pp
++----+-----+-------+------------+--------+-----+---------+-------+
+|prio|floor|path   |fullPath    |handlers|nType|wildChild|indices|
++----+-----+-------+------------+--------+-----+---------+-------+
+|2   |0    |/hello/|            |<nil>   |1    |true     |p      |
+|1   |1    |pp     |/hello/pp   |2       |0    |false    |       |
+|1   |1    |:ppaa  |/hello/:ppaa|1       |2    |false    |       |
++----+-----+-------+------------+--------+-----+---------+-------+
+--- PASS: TestOne (0.00s)
+=== RUN   TestCountParams
+--- PASS: TestCountParams (0.00s)
+=== RUN   TestTreeAddAndGet
+--- PASS: TestTreeAddAndGet (0.00s)
+=== RUN   TestTreeWildcard
+--- PASS: TestTreeWildcard (0.00s)
+=== RUN   TestUnescapeParameters
+--- PASS: TestUnescapeParameters (0.00s)
+=== RUN   TestTreeWildcardConflict
+    tree_test.go:389: unexpected panic for route '/src2/*filepath': path and n.path should have same prefix, or current node is father for catch-all
+--- PASS: TestTreeWildcardConflict (0.00s)
+=== RUN   TestCatchAllAfterSlash
+--- PASS: TestCatchAllAfterSlash (0.00s)
+=== RUN   TestTreeChildConflict
+--- PASS: TestTreeChildConflict (0.00s)
+=== RUN   TestTreeDuplicatePath
+--- PASS: TestTreeDuplicatePath (0.00s)
+=== RUN   TestEmptyWildcardName
+--- PASS: TestEmptyWildcardName (0.00s)
+=== RUN   TestTreeCatchAllConflict
+--- PASS: TestTreeCatchAllConflict (0.00s)
+=== RUN   TestTreeCatchAllConflictRoot
+--- PASS: TestTreeCatchAllConflictRoot (0.00s)
+=== RUN   TestTreeCatchMaxParams
+--- PASS: TestTreeCatchMaxParams (0.00s)
+=== RUN   TestTreeDoubleWildcard
+--- PASS: TestTreeDoubleWildcard (0.00s)
+=== RUN   TestTreeTrailingSlashRedirect
+--- PASS: TestTreeTrailingSlashRedirect (0.00s)
+=== RUN   TestTreeRootTrailingSlashRedirect
+--- PASS: TestTreeRootTrailingSlashRedirect (0.00s)
+=== RUN   TestRedirectTrailingSlash
+--- PASS: TestRedirectTrailingSlash (0.00s)
+=== RUN   TestTreeFindCaseInsensitivePath
+--- PASS: TestTreeFindCaseInsensitivePath (0.00s)
+=== RUN   TestTreeInvalidNodeType
+--- PASS: TestTreeInvalidNodeType (0.00s)
+=== RUN   TestTreeInvalidParamsType
+--- PASS: TestTreeInvalidParamsType (0.00s)
+=== RUN   TestTreeWildcardConflictEx
+catch-all node cannot do anything more, no split, no children, no siblings, no re-register
+catch-all node cannot do anything more, no split, no children, no siblings, no re-register
+catch-all node cannot do anything more, no split, no children, no siblings, no re-register
+param node cannot have wildcard siblings
+--- PASS: TestTreeWildcardConflictEx (0.00s)
+PASS
+ok      github.com/cainmusic/rough/dev/v09/treedev/v2   0.003s
+```
+
+我们把gin tree的测试代码迁移了过来测试v2版本的radix tree，于是得到上面的日志。
+
+要查看详细的开发文档，可以查看`./dev/v09/treedev/v2/routetree.md`。
+
+## 【六。三】gin tree的优化
+
+代码：
+
+```
+./dev/v09/treedev/gintree/
+├── gin
+│   ├── tree.go
+│   ├── tree_my_test.go
+│   └── tree_test.go
+├── tree.go
+├── tree.md
+├── tree_my_test.go
+└── tree_test.go
+
+1 directory, 7 files
+```
+
+详细文档可以查看`./dev/v09/treedev/gintree/tree.md`。
+
+## 【六。四】代码
+
+我们使用gin tree的优化代码来用作rough的路由表。
+
+代码：
+
+```
+./dev/v09/
+├── context.go
+├── render
+│   ├── html.go
+│   ├── json.go
+│   ├── redirect.go
+│   ├── render.go
+│   └── text.go
+├── rough.go
+├── router.go
+├── template
+│   ├── files
+│   │   ├── 1.html
+│   │   └── 2.html
+│   └── index.html
+├── test
+│   ├── main.go
+│   └── static
+│       └── html
+│           └── index.html
+├── tree.go
+├── treedev
+│   ├── gintree
+│   │   ├── gin
+│   │   │   ├── tree.go
+│   │   │   ├── tree_my_test.go
+│   │   │   └── tree_test.go
+│   │   ├── tree.go
+│   │   ├── tree.md
+│   │   ├── tree_my_test.go
+│   │   └── tree_test.go
+│   ├── v1
+│   │   ├── tree.go
+│   │   └── tree_test.go
+│   └── v2
+│       ├── routetree.md
+│       ├── tree.go
+│       ├── tree_my_test.go
+│       └── tree_test.go
+└── utils.go
+
+11 directories, 28 files
+```
+
+# 【七】Context池

@@ -26,6 +26,13 @@ func main() {
 		log.Println(c.PostForm("b"))
 	}, quickResponseUrlString)
 
+	r.GET("/hello/:x/*y", func(c *rough.Context) {
+		log.Println(c.Param("x"))
+		log.Println(c.Param("y"))
+	}, quickResponseUrlString)
+
+	r.RoutesDebug()
+
 	r.Run() // :8888
 }
 

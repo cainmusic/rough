@@ -1,7 +1,9 @@
 package rough
 
 import (
+	"log"
 	"net/http"
+	"path"
 	"regexp"
 	"strings"
 )
@@ -43,17 +45,33 @@ func (group *RouterGroup) calculateAbsolutePath(relativePath string) string {
 }
 
 func (group *RouterGroup) Static(relativePath, root string) {
+	if strings.Contains(relativePath, ":") || strings.Contains(relativePath, "*") {
+		panic("URL parameters can not be used when serving a static folder")
+	}
+
+	fs := http.Dir(root)
+
 	absolutePath := group.calculateAbsolutePath(relativePath)
-	fileServer := http.StripPrefix(absolutePath, http.FileServer(http.Dir(root)))
-	group.engine.Use(func(c *Context) {
-		if (c.R.Method == "GET" || c.R.Method == "HEAD") &&
-			strings.HasPrefix(c.R.URL.Path, absolutePath) {
-			fileServer.ServeHTTP(c.W, c.R)
-			c.Abort()
+	fileServer := http.StripPrefix(absolutePath, http.FileServer(fs))
+
+	handler := func(c *Context) {
+		file := c.Param("filepath")
+		log.Println(file)
+		f, err := fs.Open(file)
+		if err != nil {
+			c.W.WriteHeader(http.StatusNotFound)
+			c.handlers = group.engine.noRoute
+			c.index = -1
 			return
 		}
-		c.Next()
-	})
+		f.Close()
+
+		fileServer.ServeHTTP(c.W, c.R)
+	}
+	urlPattern := path.Join(relativePath, "/*filepath")
+
+	group.GET(urlPattern, handler)
+	group.HEAD(urlPattern, handler)
 }
 
 func (group *RouterGroup) Use(middleware ...HandleFunc) {
