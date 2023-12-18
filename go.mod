@@ -3,7 +3,7 @@ module github.com/cainmusic/rough
 go 1.20
 
 require (
-	github.com/cainmusic/gtable v1.0.0
+	github.com/cainmusic/gtable v1.0.1
 	github.com/gin-gonic/gin v1.9.1
 )
 
